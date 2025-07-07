@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Weight Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 20px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 25px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .healthy {
+      color: green;
+      font-weight: bold;
+    }
+
+    .unhealthy {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+     <h2>R K</h2>
+    <h2>Weight Calculator</h2>
+    <label for="weight">Current Weight (kg):</label>
+    <input type="number" id="weight" placeholder="e.g. 70">
+
+    <label for="heightFeet">Height (feet, e.g. 5.8 for 5 feet 8 inches):</label>
+    <input type="number" id="heightFeet" placeholder="e.g. 5.8">
+
+    <button onclick="calculateBMI()">Check</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateBMI() {
+      const weight = parseFloat(document.getElementById('weight').value);
+      const heightFeet = parseFloat(document.getElementById('heightFeet').value);
+
+      if (isNaN(weight) || isNaN(heightFeet) || weight <= 0 || heightFeet <= 0) {
+        alert("Please enter valid weight and height.");
+        return;
+      }
+
+      // Convert decimal feet to inches
+      const feetPart = Math.floor(heightFeet);
+      const decimalPart = heightFeet - feetPart;
+      const inchesPart = decimalPart * 12;
+      const totalInches = (feetPart * 12) + inchesPart;
+
+      // Convert inches to meters
+      const heightM = totalInches * 0.0254;
+
+      const bmi = weight / (heightM * heightM);
+      const bmiRounded = bmi.toFixed(1);
+
+      let status = "";
+      let className = "";
+
+      if (bmi < 18.5) {
+        status = "Underweight";
+        className = "unhealthy";
+      } else if (bmi >= 18.5 && bmi <= 24.9) {
+        status = "Healthy weight";
+        className = "healthy";
+      } else if (bmi >= 25 && bmi <= 29.9) {
+        status = "Overweight";
+        className = "unhealthy";
+      } else {
+        status = "Obese";
+        className = "unhealthy";
+      }
+
+      const minIdealWeight = (18.5 * heightM * heightM).toFixed(1);
+      const maxIdealWeight = (24.9 * heightM * heightM).toFixed(1);
+
+      document.getElementById('result').innerHTML = `
+        <p>Your BMI is <strong>${bmiRounded}</strong>.</p>
+        <p class="${className}">Status: ${status}</p>
+        <p>Your ideal weight should be between <strong>${minIdealWeight} kg</strong> and <strong>${maxIdealWeight} kg</strong>.</p>
+      `;
+    }
+  </script>
+</body>
+</html>
